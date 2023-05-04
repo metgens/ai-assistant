@@ -2,7 +2,7 @@ import { app, BrowserWindow, screen, ipcMain, nativeTheme } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import { loadState, saveState, state } from './stores/main';
-import { registerKeystroke } from './shortcuts/shortcuts';
+import { registerKeystroke, unregisterAll } from './shortcuts/shortcuts-registrant';
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
@@ -53,7 +53,11 @@ function createWindow(): BrowserWindow {
     win = null;
   });
 
-  loadState(state);
+  loadState(state).then((loadedState) => {
+    loadedState.shortcuts.forEach(shortcut => {
+      registerKeystroke(win, shortcut);
+    });
+  })
 
   return win;
 }
@@ -69,6 +73,8 @@ try {
   app.on('window-all-closed', () => {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
+
+    unregisterAll();
 
     if (process.platform !== 'darwin') {
       app.quit();

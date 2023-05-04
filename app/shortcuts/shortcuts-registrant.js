@@ -10,24 +10,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.unregisterAll = exports.unregisterKeystroke = exports.registerKeystroke = void 0;
-const main_1 = require("../stores/main");
 const electron_1 = require("electron");
-const createAction = (currentState, shortcut) => __awaiter(void 0, void 0, void 0, function* () {
-    return () => {
-        var _a, _b;
-        console.log(`Action executed`);
-        const clipboardText = (_b = (_a = electron_1.clipboard.readText()) === null || _a === void 0 ? void 0 : _a.toString()) === null || _b === void 0 ? void 0 : _b.trim();
-        const updatedState = Object.assign(Object.assign({}, currentState), { query: clipboardText !== null && clipboardText !== void 0 ? clipboardText : '', messages: [
-                { role: 'system', content: shortcut.system },
-            ] });
-        (0, main_1.updateState)(updatedState);
-    };
-});
-const registerKeystroke = (currentState, shortcut) => __awaiter(void 0, void 0, void 0, function* () {
+const registerKeystroke = (win, shortcut) => __awaiter(void 0, void 0, void 0, function* () {
     if (electron_1.globalShortcut.isRegistered(shortcut.keystroke))
         return;
-    const action = yield createAction(currentState, shortcut);
-    const ret = electron_1.globalShortcut.register(shortcut.keystroke, action);
+    const ret = electron_1.globalShortcut.register(shortcut.keystroke, () => {
+        const shortcutId = `shortcut:${shortcut.id}`;
+        win.webContents.send(shortcutId);
+        win.show();
+        console.log("Sent" + shortcutId);
+    });
     if (!ret) {
         console.log(`${shortcut.keystroke} registration failed`);
     }
@@ -43,4 +35,4 @@ const unregisterAll = () => {
     electron_1.globalShortcut.unregisterAll();
 };
 exports.unregisterAll = unregisterAll;
-//# sourceMappingURL=shortcuts.js.map
+//# sourceMappingURL=shortcuts-registrant.js.map

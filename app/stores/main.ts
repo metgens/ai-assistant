@@ -50,6 +50,12 @@ export const state = {
             system: 'Answer yes or no.',
             name: 'Yes or no',
             keystroke: 'CommandOrControl+Shift+K'
+        },
+        {
+            id: 2,
+            system: 'You are the world class C# developer. Provide code without any comments for my problems',
+            name: 'C#',
+            keystroke: 'CommandOrControl+Shift+L'
         }
     ]
 } as IState

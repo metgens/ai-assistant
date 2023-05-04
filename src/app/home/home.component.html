@@ -22,8 +22,8 @@
 
   <div class="text-left mt-3.5 overflow-y-auto output p-2.5">
       <div *ngFor="let message of currentState?.messages" class="mb-2.5">
-          <span *ngIf="message.role === 'system'" class="opacity-50">system ({{model}}): {{message.content}}</span>
-          <div *ngIf="message.role !== 'system'" class="font-bold opacity-50">{{message.role === 'assistant' ? 'Angela' : 'You'}}</div> {{message.content}}
+          <span *ngIf="message.role === 'system'" class="">system ({{currentState.model}}): {{message.content}}</span>
+          <div *ngIf="message.role !== 'system'" class="font-bold">{{message.role === 'assistant' ? 'Angela' : 'You'}}: {{message.content}}</div> 
       </div>
   </div>
 </div>

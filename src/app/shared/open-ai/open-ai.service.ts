@@ -1,61 +1,63 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable } from '@angular/core';
 import { clipboard } from 'electron';
 import { defaultSystemPrompt, state } from '../../../../app/stores/main';
-import { IState } from '../../core/services/electron/stores/main.dt';
+import { IState } from '../../../../app/stores/main.dt';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OpenAiService {
 
+  private apiUrl = 'https://api.openai.com/v1/chat/completions';
+  private maxTokens = 1500;
+  private temperature = 0.8;
+  private model = 'gpt-3.5-turbo';
+
   constructor() { }
 
-  private API_URL = "https://api.openai.com/v1/chat/completions";
-  private max_tokens = 1500;
-  private temperature = 0.8;
-  private model = "gpt-3.5-turbo";
 
   async openAICompletion(query: Partial<IState>) {
     try {
       const options = {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json; charset=utf-8",
+          'Content-Type': 'application/json; charset=utf-8',
           Authorization: `Bearer ${query.apikey}`,
         },
         body: JSON.stringify({
           model: query.model ?? this.model,
-          max_tokens: query.max_tokens ?? this.max_tokens,
+          max_tokens: query.max_tokens ?? this.maxTokens,
           temperature: query.temperature ?? this.temperature,
           messages: query.messages ?? [],
           stream: query.stream ?? false,
-          stop: ["---"]
+          stop: ['---']
         }),
       };
 
-      return fetch(this.API_URL, options);
+      return fetch(this.apiUrl, options);
     } catch (err: any) {
       throw new Error(err.message);
     }
   }
 
-  updateLatestMessage(state, content) {
-    const latestMessage = state.messages[state.messages.length - 1];
+  updateLatestMessage(stateChanged: IState, content) {
+    const latestMessage = stateChanged.messages[stateChanged.messages.length - 1];
     if (latestMessage.role === 'assistant') {
-      state.messages[state.messages.length - 1] = {
+      stateChanged.messages[stateChanged.messages.length - 1] = {
         role: 'assistant',
         content: latestMessage.content + content
-      }
+      };
     } else {
-      state.messages = [
-        ...state.messages,
+      stateChanged.messages = [
+        ...stateChanged.messages,
         {
           role: 'assistant',
           content,
         },
       ];
     }
-    return state;
+    return stateChanged;
   }
 
   async displayAnswer(query: Partial<IState>, response: Response) {
@@ -75,9 +77,9 @@ export class OpenAiService {
         if (message === '[DONE]') {
           await clipboard.writeText(answer);
 
-          state.messages = state.messages.map(message => {
-            message.content = message.role === 'system' ? defaultSystemPrompt : message.content;
-            return message;
+          state.messages = state.messages.map(msg => {
+            msg.content = msg.role === 'system' ? defaultSystemPrompt : msg.content;
+            return msg;
           })
           state.query = '';
 

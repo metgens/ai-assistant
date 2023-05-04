@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { stateEventEmitter, state, saveState, loadState } from '../../../app/stores/main'
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { stateEventEmitter, state, saveState, loadState, updateState } from '../../../app/stores/main';
 import { OpenAiChatService } from '../shared/open-ai/open-ai-chat.service';
-import { registerKeystroke } from '../../../app/shortcuts/shortcuts';
-import { IState } from '../core/services/electron/stores/main.dt';
+import { IState } from '../../../app/stores/main.dt';
+import { clipboard } from 'electron';
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -13,13 +13,19 @@ import { IState } from '../core/services/electron/stores/main.dt';
 export class HomeComponent implements OnInit {
 
   currentState: IState;
+  private ipcRenderer: any;
 
-  constructor(private openAiChat: OpenAiChatService) { }
+  constructor(private openAiChat: OpenAiChatService, private changeDetectorRef: ChangeDetectorRef) {
+    this.ipcRenderer = window.require('electron').ipcRenderer;
+  }
 
   ngOnInit(): void {
     console.log('HomeComponent INIT');
     this.loadState();
-    stateEventEmitter.on('stateChanged', (state) => { this.currentState = state });
+    stateEventEmitter.on('stateChanged', (stateChanged) => {
+      this.currentState = stateChanged;
+      this.changeDetectorRef.detectChanges();
+    });
     window.addEventListener('keydown', (ev) => this.sendShortcut(ev));
   }
 
@@ -29,29 +35,46 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  ask() {
+    return this.openAiChat.ask(this.currentState);
+  }
+
+  async updateApiKey(event) {
+    const apiKey = event.target.value;
+    if (apiKey) { await saveState({ apikey: apiKey }); }
+    await this.loadState();
+  }
+
+  updateQuery(event) {
+    state.query = event.target.value;
+  }
+
   private loadState() {
-    loadState(state).then((state) => {
-      this.currentState = state;
-      state.shortcuts.forEach(shortcut => {
-        registerKeystroke(state, shortcut);
+    loadState(state).then((loadedState) => {
+      this.currentState = loadedState;
+      loadedState.shortcuts.forEach(shortcut => {
+        this.ipcRenderer.on(`shortcut:${shortcut.id}`, this.createShortcutAction(shortcut));
       });
     });
   }
 
-  public ask() {
-    return this.openAiChat.ask(this.currentState);
+
+  private createShortcutAction(shortcut) {
+    return () => {
+      const clipboardText = clipboard.readText()?.toString()?.trim();
+      console.log(clipboardText);
+      const newState = {
+        ...this.currentState,
+        query: clipboardText ?? '',
+        messages: [
+          { role: 'system', content: shortcut.system },
+        ]
+      } as IState;
+      updateState(newState);
+      console.log(`Action executed`);
+    };
   }
 
-  public async updateApiKey(event) {
-    const apiKey = event.target.value;
-    if (apiKey)
-      await saveState({ apikey: apiKey });
-    await this.loadState();
-  }
-
-  public updateQuery(event) {
-    state.query = event.target.value;
-  }
 }
 
 

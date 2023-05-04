@@ -1,0 +1,10 @@
+{
+  "PAGES": {
+      "HOME": {
+          "TITLE": "Home"
+      },
+      "AIDEV": {
+        "TITLE": "AI-devs"
+    }
+  }
+}

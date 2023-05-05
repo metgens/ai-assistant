@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable } from '@angular/core';
-import { clipboard } from 'electron';
-import { defaultSystemPrompt, state } from '../../../../app/stores/main';
-import { IState } from '../../../../app/stores/main.dt';
+import { clipboard } from '@tauri-apps/api';
+import { IState } from '../../core/stores/state.dt';
+import { StateService, defaultSystemPrompt } from '../../core/stores/state-service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +13,11 @@ export class OpenAiService {
   private maxTokens = 1500;
   private temperature = 0.8;
   private model = 'gpt-3.5-turbo';
+  private currentState: IState = {} as IState;
 
-  constructor() { }
+  constructor(private stateService: StateService) {
+    this.stateService.state$.subscribe(value => this.currentState = value);
+  }
 
 
   async openAICompletion(query: Partial<IState>) {
@@ -23,11 +26,11 @@ export class OpenAiService {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
-          Authorization: `Bearer ${query.apikey}`,
+          Authorization: `Bearer ${query.apiKey}`,
         },
         body: JSON.stringify({
           model: query.model ?? this.model,
-          max_tokens: query.max_tokens ?? this.maxTokens,
+          max_tokens: query.maxTokens ?? this.maxTokens,
           temperature: query.temperature ?? this.temperature,
           messages: query.messages ?? [],
           stream: query.stream ?? false,
@@ -41,7 +44,7 @@ export class OpenAiService {
     }
   }
 
-  updateLatestMessage(stateChanged: IState, content) {
+  updateLatestMessage(stateChanged: IState, content: any) {
     const latestMessage = stateChanged.messages[stateChanged.messages.length - 1];
     if (latestMessage.role === 'assistant') {
       stateChanged.messages[stateChanged.messages.length - 1] = {
@@ -61,6 +64,11 @@ export class OpenAiService {
   }
 
   async displayAnswer(query: Partial<IState>, response: Response) {
+
+    if (response == null || response.body == null) {
+      return;
+    }
+
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
 
@@ -77,19 +85,21 @@ export class OpenAiService {
         if (message === '[DONE]') {
           await clipboard.writeText(answer);
 
-          state.messages = state.messages.map(msg => {
+          this.currentState.messages = this.currentState?.messages.map(msg => {
             msg.content = msg.role === 'system' ? defaultSystemPrompt : msg.content;
             return msg;
-          })
-          state.query = '';
-
+          });
+          this.currentState.query = '';
+          this.updateLatestMessage(this.currentState, '\n');
+          this.stateService.updateState(this.currentState);
           return; // Stream finished
         }
         try {
           const parsed = JSON.parse(message);
           const content = (query.stream ? parsed.choices[0].delta.content : parsed.choices[0].message.content) ?? '';
           answer += content;
-          this.updateLatestMessage(state, content);
+          this.updateLatestMessage(this.currentState, content);
+          this.stateService.updateState(this.currentState);
         } catch (error) {
           console.error('Could not JSON parse stream message', message, error);
         }

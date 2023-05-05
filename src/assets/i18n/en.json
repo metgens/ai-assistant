@@ -1,10 +1,12 @@
 {
   "PAGES": {
       "HOME": {
-          "TITLE": "Home"
+          "TITLE": "App works !",
+          "GO_TO_DETAIL": "Go to Detail"
       },
-      "AIDEV": {
-        "TITLE": "AI-devs"
+      "DETAIL": {
+        "TITLE": "Detail page !",
+        "BACK_TO_HOME": "Back to Home"
     }
   }
 }

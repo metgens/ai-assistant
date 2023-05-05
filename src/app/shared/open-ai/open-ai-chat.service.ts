@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { OpenAiService } from './open-ai.service';
+import { IState } from '../../core/stores/state.dt';
 
 @Injectable({
   providedIn: 'root'
@@ -8,9 +9,9 @@ export class OpenAiChatService {
 
   constructor(private openAiService: OpenAiService) { }
 
-  public async generateAnswer(currentState) {
+  public async generateAnswer(currentState: IState) {
     const response = await this.openAiService.openAICompletion({
-      apikey: currentState.apikey,
+      apiKey: currentState.apiKey,
       stream: currentState.stream,
       messages: currentState.messages,
     });
@@ -21,7 +22,7 @@ export class OpenAiChatService {
     }
   }
 
-  public async ask(currentState) {
+  public async ask(currentState: IState) {
     if (!currentState.query) {
       return;
     }
@@ -34,7 +35,7 @@ export class OpenAiChatService {
           content: currentState.query
         }
       ]
-    }
+    } as IState;
     await this.generateAnswer(updatedState);
   }
 

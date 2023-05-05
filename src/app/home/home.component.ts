@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { stateEventEmitter, state, saveState, loadState, updateState } from '../../../app/stores/main';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { OpenAiChatService } from '../shared/open-ai/open-ai-chat.service';
-import { IState } from '../../../app/stores/main.dt';
-import { clipboard } from 'electron';
+import { IShortcut, IState } from '../core/stores/state.dt';
+import { StateService } from '../core/stores/state-service';
+import { ShortcutsService } from '../core/shortcuts';
+
 
 @Component({
   selector: 'app-home',
@@ -10,69 +11,55 @@ import { clipboard } from 'electron';
   styleUrls: ['./home.component.scss']
 })
 
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
 
-  currentState: IState;
-  private ipcRenderer: any;
+  currentState: IState | null = null;
 
-  constructor(private openAiChat: OpenAiChatService, private changeDetectorRef: ChangeDetectorRef) {
-    this.ipcRenderer = window.require('electron').ipcRenderer;
+  constructor(private stateService: StateService, private shortcutsService: ShortcutsService,
+    private openAiChat: OpenAiChatService, private changeDetectorRef: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
     console.log('HomeComponent INIT');
     this.loadState();
-    stateEventEmitter.on('stateChanged', (stateChanged) => {
-      this.currentState = stateChanged;
+    this.stateService.state$.subscribe(state => {
+      this.currentState = state;
       this.changeDetectorRef.detectChanges();
     });
     window.addEventListener('keydown', (ev) => this.sendShortcut(ev));
   }
 
-  async sendShortcut(event) {
+  ngOnDestroy(): void {
+    this.currentState?.shortcuts.forEach(shortcut => {
+      this.shortcutsService.unregisterKeystroke(shortcut);
+    });
+  }
+
+  async sendShortcut(event: KeyboardEvent) {
     if (event.key === 'Enter' && event.metaKey) {
       await this.ask();
     }
   }
 
   ask() {
-    return this.openAiChat.ask(this.currentState);
+    return this.openAiChat.ask(this.currentState as IState);
   }
 
-  async updateApiKey(event) {
+  async updateApiKey(event: any) {
     const apiKey = event.target.value;
-    if (apiKey) { await saveState({ apikey: apiKey }); }
-    await this.loadState();
+    if (apiKey) { await this.stateService.saveState({ apiKey }); }
   }
 
-  updateQuery(event) {
-    state.query = event.target.value;
+  updateQuery(event: any) {
+    this.stateService.updateState({ query: event.target.value });
   }
 
   private loadState() {
-    loadState(state).then((loadedState) => {
-      this.currentState = loadedState;
-      loadedState.shortcuts.forEach(shortcut => {
-        this.ipcRenderer.on(`shortcut:${shortcut.id}`, this.createShortcutAction(shortcut));
+    this.stateService.loadState().then((loadedState) => {
+      loadedState?.shortcuts.forEach(shortcut => {
+        this.shortcutsService.registerKeystroke(loadedState, shortcut);
       });
     });
-  }
-
-
-  private createShortcutAction(shortcut) {
-    return () => {
-      const clipboardText = clipboard.readText()?.toString()?.trim();
-      console.log(clipboardText);
-      const newState = {
-        ...this.currentState,
-        query: clipboardText ?? '',
-        messages: [
-          { role: 'system', content: shortcut.system },
-        ]
-      } as IState;
-      updateState(newState);
-      console.log(`Action executed`);
-    };
   }
 
 }

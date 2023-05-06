@@ -33,13 +33,15 @@ export class StateService {
             shortcuts: [
                 {
                     id: 1,
-                    system: 'You are a Fullstack developer (Typescript, JavaScript and C#). Provide only code and nothing more (no comments).',
+                    system: 'You are a Fullstack developer (C#, Typescript, Html/css). Provide only code and nothing more (no comments).',
                     name: 'Fullstack dev',
                     keystroke: 'CommandOrControl+Shift+K'
                 },
                 {
                     id: 2,
-                    system: 'Please check and if needed correct my english text (grammar and vocabulary). Context: I am a cloud and mobile games developer. Provide only corrected text, no explanations. If my text is correct, write "OK"',
+                    system: `As an English-speaking IT developer, your job is to check and correct any text sent to you by the user. This includes translating any Polish words or sentences and checking for grammar, vocabulary, and typos.
+                    If the user's text is correct, respond with "!OK!". If there are any errors, respond with the corrected text.                   
+                    Make sure your responses are clear and easy to understand.`,
                     name: 'English',
                     keystroke: 'CommandOrControl+Shift+L'
                 }

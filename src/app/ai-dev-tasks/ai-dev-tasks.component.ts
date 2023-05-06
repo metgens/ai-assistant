@@ -67,6 +67,43 @@ export class AiDevTasksComponent implements OnInit {
     }
   }
 
+  async doTask05() {
+    const taskName = 'blogger';
+    const token = await this.taskWrapper.getAuthenticationToken(taskName);
+    this.task = await this.taskWrapper.getTask(token);
+
+    const queryForPerson = {
+      messages: [
+        { role: 'user', content: `[${this.task.blog.toString()}]` },
+        {
+          role: 'system',
+          content: `You are polish-speaker blog writer. 
+Please write a blog post with chapters which will be provided in array.
+The response should be an stringified json array with strings, where each chapter text is a separate string (max 3 sentences per each chapter). 
+It should have the same amount of elements as input array. Chapter title shouldn't be separate string in this array.
+
+###
+Input Example
+###
+["chapterTitle1", "chapterTitle2"]
+
+###
+Response Example
+###
+'["Tekst na temat chapterTitle1 po polsku","Tekst na temat chapterTitle2 po polsku"]'
+` }
+      ],
+      apiKey: this.currentState?.apiKey
+    } as IState;
+
+    const response = await this.openAi.openAIChatCompletion(queryForPerson);
+    const responseJson = await response.json();
+    this.response = responseJson;
+    let answer = responseJson.choices[0].message.content;
+    answer = JSON.parse(answer);
+    this.response = await this.taskWrapper.sendAnswer(token, answer);
+  }
+
   async updateApiKey(event: any) {
     const apiKey = event.target.value;
     if (apiKey) { await this.stateService.saveState({ apiKey }); }

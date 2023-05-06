@@ -1,0 +1,37 @@
+<div class="flex flex-col w-100 p-3">
+
+  <p>
+    <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+      aria-expanded="false" aria-controls="collapseExample">
+      API Keys
+    </button>
+  </p>
+  <div class="collapse" id="collapseExample">
+    <div class="input-group w-100 py-1">
+      <input class="form-control" placeholder="OpenAI API Key" type="text" (blur)="updateApiKey($event)"
+        [value]="currentState?.apiKey">
+    </div>
+    <div class="input-group w-100 py-1">
+      <input class="form-control" placeholder="AI Dev API Key" type="text" (blur)="updateAiDevApiKey($event)"
+        [value]="currentState?.aiDevApiKey">
+    </div>
+  </div>
+  <div class="flex-row">
+    <button class="btn btn-secodnart" type="button" (click)="doTask01()" aria-expanded="false"
+      aria-controls="collapseExample">
+      Task 1 - helloapi
+    </button>
+    <button class="btn btn-secodnart" type="button" (click)="doTask03()" aria-expanded="false"
+      aria-controls="collapseExample">
+      Task 3 - inprompt
+    </button>
+  </div>
+  <div class="w-100 p-3">
+    <code>
+      <pre>{{response |json}}</pre>
+  </code>
+    <code>
+      <pre>{{task |json}}</pre>
+  </code>
+  </div>
+</div>

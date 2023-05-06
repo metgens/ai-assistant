@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Injectable } from '@angular/core';
 import { Store } from 'tauri-plugin-store-api';
 import { IState } from './state.dt';
@@ -32,9 +33,15 @@ export class StateService {
             shortcuts: [
                 {
                     id: 1,
-                    system: 'Answer yes or no.',
-                    name: 'Yes or no',
+                    system: 'You are a Fullstack developer (Typescript, JavaScript and C#). Provide only code and nothing more (no comments).',
+                    name: 'Fullstack dev',
                     keystroke: 'CommandOrControl+Shift+K'
+                },
+                {
+                    id: 2,
+                    system: 'Please check and if needed correct my english text (grammar and vocabulary). Context: I am a cloud and mobile games developer. Provide only corrected text, no explanations. If my text is correct, write "OK"',
+                    name: 'English',
+                    keystroke: 'CommandOrControl+Shift+L'
                 }
             ]
         } as IState);
@@ -58,7 +65,7 @@ export class StateService {
 
     public async loadState(): Promise<IState | null> {
         const savedState = await this.store.get('state') as IState;
-        this.updateState({ apiKey: savedState.apiKey });
+        this.updateState({ apiKey: savedState.apiKey, aiDevApiKey: savedState.aiDevApiKey });
         return this.currentState;
     }
 

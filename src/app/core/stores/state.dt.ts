@@ -1,5 +1,6 @@
 export interface IState {
     apiKey: string;
+    aiDevApiKey: string;
     model: 'gpt-4' | 'gpt-3.5-turbo';
     maxTokens: number;
     temperature: number;

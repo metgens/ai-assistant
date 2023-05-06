@@ -28,8 +28,9 @@ export class ShortcutsService {
     private async createAction(currentState: IState, shortcut: IShortcut) {
         return async () => {
             console.log(`Action started ${shortcut.name}`);
-            appWindow.show();
-            appWindow.setFocus();
+            await appWindow.show();
+            await appWindow.unminimize();
+            await appWindow.setFocus();
 
             const clipboardText = (await readText())?.toString()?.trim();
             const updatedState = {

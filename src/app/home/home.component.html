@@ -3,14 +3,7 @@
     Assistant
   </h1>
 
-  <div class="flex flex-col w-100 p-3">
-
-    <p>
-      <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
-        aria-expanded="false" aria-controls="collapseExample">
-        API Key
-      </button>
-    </p>
+  <div class="flex flex-col w-100 p-3 pt-0" style="margin-top: -20px;">
     <div class="collapse" id="collapseExample">
       <div class="input-group w-100 py-1">
         <input class="form-control" placeholder="OpenAI API Key" type="text" (blur)="updateApiKey($event)"
@@ -21,17 +14,22 @@
 
     <div class="input-group w-100 py-1">
       <textarea class="form-control" aria-label="With textarea" (change)="updateQuery($event)"
-        [value]="currentState?.query" placeholder="Ask me anything..." name="prompt" id="" rows="6"></textarea>
+        [value]="currentState?.query" placeholder="Ask me anything..." name="prompt" id="" rows="4"></textarea>
     </div>
-
-    <button class="btn btn-primary w-25 my-2" (click)="ask()">
-      Send
-    </button>
+    <div class="d-flex flex-row w-100">
+      <button class="btn btn-primary w-25 my-2 me-auto" (click)="ask()">
+        Send
+      </button>
+      <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample"
+        aria-expanded="false" aria-controls="collapseExample">
+        API Key
+      </button>
+    </div>
   </div>
 
   <div class="w-100 p-3">
-    <div *ngFor="let message of currentState?.messages" class="mb-2.5 w-100">
-      <pre>
+    <div *ngFor="let message of currentState?.messages" class="w-100">
+      <pre style="white-space: break-spaces;">
       <span *ngIf="message.role === 'system'" class="">system ({{currentState?.model}}): {{message.content}}</span>
       <div *ngIf="message.role !== 'system'" class="font-bold">{{message.role === 'assistant' ? 'Angela' : 'You'}}:{{message.content}}</div>
     </pre>

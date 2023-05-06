@@ -3,13 +3,17 @@ import { Routes, RouterModule } from '@angular/router';
 import { PageNotFoundComponent } from './shared/components';
 
 import { HomeRoutingModule } from './home/home-routing.module';
-import { DetailRoutingModule } from './detail/detail-routing.module';
+import { AiDevTasksComponent } from './ai-dev-tasks/ai-dev-tasks.component';
 
 const routes: Routes = [
   {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
+  },
+  {
+    path: 'aiDevTasks',
+    component: AiDevTasksComponent
   },
   {
     path: '**',
@@ -20,8 +24,7 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {}),
-    HomeRoutingModule,
-    DetailRoutingModule
+    HomeRoutingModule
   ],
   exports: [RouterModule]
 })

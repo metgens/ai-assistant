@@ -10,7 +10,7 @@ export class OpenAiChatService {
   constructor(private openAiService: OpenAiService) { }
 
   public async generateAnswer(currentState: IState) {
-    const response = await this.openAiService.openAICompletion({
+    const response = await this.openAiService.openAIChatCompletion({
       apiKey: currentState.apiKey,
       stream: currentState.stream,
       messages: currentState.messages,

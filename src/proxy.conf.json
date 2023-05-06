@@ -1,0 +1,20 @@
+{
+    "/token/*": {
+        "target": "https://zadania.aidevs.pl",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    "/task/*": {
+        "target": "https://zadania.aidevs.pl",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    "/answer/*": {
+        "target": "https://zadania.aidevs.pl",
+        "secure": true,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    }
+}

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable } from '@angular/core';
 import { clipboard } from '@tauri-apps/api';
-import { IState } from '../../core/stores/state.dt';
+import { IMessage, IState } from '../../core/stores/state.dt';
 import { StateService, defaultSystemPrompt } from '../../core/stores/state-service';
 
 @Injectable({
@@ -9,7 +9,7 @@ import { StateService, defaultSystemPrompt } from '../../core/stores/state-servi
 })
 export class OpenAiService {
 
-  private apiUrl = 'https://api.openai.com/v1/chat/completions';
+
   private maxTokens = 1500;
   private temperature = 0.8;
   private model = 'gpt-3.5-turbo';
@@ -20,8 +20,9 @@ export class OpenAiService {
   }
 
 
-  async openAICompletion(query: Partial<IState>) {
+  async openAIChatCompletion(query: Partial<IState>) {
     try {
+      const apiUrl = 'https://api.openai.com/v1/chat/completions';
       const options = {
         method: 'POST',
         headers: {
@@ -38,7 +39,34 @@ export class OpenAiService {
         }),
       };
 
-      return fetch(this.apiUrl, options);
+      return fetch(apiUrl, options);
+    } catch (err: any) {
+      throw new Error(err.message);
+    }
+  }
+
+  async openAICompletion(query: { prompt: string; apiKey: any; model?: string; maxTokens?: number; temperature?: number; }) {
+    try {
+      const apiUrl = 'https://api.openai.com/v1/completions';
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          Authorization: `Bearer ${query.apiKey}`,
+        },
+        body: JSON.stringify({
+          model: query.model ?? 'text-davinci-003',
+          max_tokens: query.maxTokens ?? this.maxTokens,
+          temperature: query.temperature ?? this.temperature,
+          prompt: query.prompt,
+          stream: false
+        }),
+      };
+
+      const response = await fetch(apiUrl, options);
+      if (response.ok) {
+        return response.json();
+      }
     } catch (err: any) {
       throw new Error(err.message);
     }

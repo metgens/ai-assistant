@@ -5,6 +5,7 @@ import { HomeRoutingModule } from './home-routing.module';
 
 import { HomeComponent } from './home.component';
 import { SharedModule } from '../shared/shared.module';
+import { AiDevTasksComponent } from '../ai-dev-tasks/ai-dev-tasks.component';
 
 @NgModule({
   declarations: [HomeComponent],

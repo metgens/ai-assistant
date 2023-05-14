@@ -3,6 +3,7 @@ import { OpenAiChatService } from '../shared/open-ai/open-ai-chat.service';
 import { IMessage, IShortcut, IState } from '../core/stores/state.dt';
 import { StateService } from '../core/stores/state-service';
 import { ShortcutsService } from '../core/shortcuts';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -15,7 +16,10 @@ export class HomeComponent implements OnInit {
 
   currentState: IState | null = null;
 
-  constructor(private stateService: StateService, private openAiChat: OpenAiChatService, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(private stateService: StateService, private openAiChat: OpenAiChatService,
+    private changeDetectorRef: ChangeDetectorRef, private route: ActivatedRoute) {
+
+      console.log(route.data);
   }
 
   ngOnInit(): void {

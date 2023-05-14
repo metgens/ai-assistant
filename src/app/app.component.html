@@ -1,18 +1,24 @@
 <main class="d-flex flex-nowrap h-100">
     <div class="d-flex flex-column flex-shrink-0 bg-dark">
         <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
-            <li class="nav-item">
-                <a routerLink="/home" class="nav-link active border-bottom rounded-0" aria-current="page" title="Home"
+            <li>
+                <button (click)="openAssistantRole(null)" class="nav-link border-bottom rounded-0" aria-current="page"
+                    [routerLink]='["/home","assistant"]' routerLinkActive="active"  [routerLinkActiveOptions]="{exact: true}" title="Assistant"
                     data-bs-toggle="tooltip" data-bs-placement="right">
-                    <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Home">
-                    </svg>
-                </a>
+                    <i class="bi bi-chat"></i>
+                </button>
+            </li>
+            <li *ngFor="let shortcut of assistantShortcuts">
+                <button (click)="openAssistantRole(shortcut)" class="nav-link border-bottom rounded-0"
+                    aria-current="page" [routerLink]='["/home", shortcut.name]' routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" [title]="shortcut.name"
+                    data-bs-toggle="tooltip" data-bs-placement="right">
+                    <i class="bi {{shortcut.icon}}"></i>
+                </button>
             </li>
             <li>
-                <a routerLink="/aiDevTasks" class="nav-link border-bottom rounded-0" title="Dashboard" data-bs-toggle="tooltip"
-                    data-bs-placement="right">
-                    <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Dashboard">
-                    </svg>
+                <a routerLink="/aiDevTasks" routerLinkActive="active" class="nav-link border-bottom rounded-0" title="Tasks"
+                    data-bs-toggle="tooltip" data-bs-placement="right">
+                    <i class="bi bi-list-check"></i>
                 </a>
             </li>
         </ul>

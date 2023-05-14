@@ -4,7 +4,7 @@ import { Store } from 'tauri-plugin-store-api';
 import { IState } from './state.dt';
 import { BehaviorSubject, Observable } from 'rxjs';
 
-export const defaultSystemPrompt = 'You\'re a helpful assistant named Angela';
+export const defaultSystemPrompt = 'You\'re a helpful assistant named Ben';
 
 @Injectable({
     providedIn: 'root'
@@ -34,16 +34,43 @@ export class StateService {
                 {
                     id: 1,
                     system: 'You are a Fullstack developer (C#, Typescript, Html/css). Provide only code and nothing more (no comments).',
-                    name: 'Fullstack dev',
-                    keystroke: 'CommandOrControl+Shift+K'
+                    name: 'Fullstack Dev',
+                    keystroke: 'CommandOrControl+Shift+K',
+                    icon: 'bi-keyboard'
                 },
                 {
                     id: 2,
-                    system: `As an English-speaking IT developer, your job is to check and correct any text sent to you by the user. This includes translating any Polish words or sentences and checking for grammar, vocabulary, and typos.
-                    If the user's text is correct, respond with "!OK!". If there are any errors, respond with the corrected text.                   
-                    Make sure your responses are clear and easy to understand.`,
-                    name: 'English',
-                    keystroke: 'CommandOrControl+Shift+L'
+                    system:
+                        `Check and if needed correct or translate to English {user} text (grammar and vocabulary) taking apart context.
+Everything that user sends needs to be only translated. Provide only corrected text, no explanations. If my text is correct, write only "OK!"
+!!!Context: I am a cloud and mobile games developer.`,
+                    name: 'Fix typos',
+                    keystroke: 'CommandOrControl+Shift+L',
+                    icon: 'bi-globe'
+                },
+                {
+                    id: 2,
+                    system:
+                        `Translate to polish language.`,
+                    name: 'Translate',
+                    keystroke: null,
+                    icon: 'bi-translate'
+                },
+                {
+                    id: 3,
+                    system:
+                        `You are a fullstack developer (C#, Typescript, Html/css). Explain provided error.`,
+                    name: 'Explain error',
+                    keystroke: null,
+                    icon: 'bi-bug'
+                },
+                {
+                    id: 3,
+                    system:
+                        `Detect {language} and summarize {user} text in bullet points. Output only in detected {language}.`,
+                    name: 'Summarize',
+                    keystroke: null,
+                    icon: 'bi-body-text'
                 }
             ]
         } as IState);

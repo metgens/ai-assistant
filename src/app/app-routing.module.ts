@@ -8,7 +8,7 @@ import { AiDevTasksComponent } from './ai-dev-tasks/ai-dev-tasks.component';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'home/assistant',
     pathMatch: 'full'
   },
   {

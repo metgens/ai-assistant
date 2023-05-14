@@ -3,6 +3,16 @@
     Assistant
   </h1>
 
+  <div class="w-100 p-3 flex-fill overflow-auto flex flex-column-reverse" style="display: flex">
+    <code style="white-space: break-spaces;">
+    <div *ngFor="let message of currentState?.messages" class="w-100 mb-1" [ngClass]="{'chat-not-assistant': message.role !== 'assistant'}">
+      <span *ngIf="message.role === 'system'" class="">system ({{currentState?.model}}): {{message.content}}</span>
+      <div *ngIf="message.role !== 'system'" class="font-bold">{{message.role === 'assistant' ? 'Angela' :
+        'You'}}: {{message.content}}</div>
+    </div>
+    </code>
+  </div>
+
   <div class="flex flex-col w-100 p-3 pt-0" style="margin-top: -15px;">
     <div class="collapse" id="collapseExample">
       <div class="input-group w-100 py-1">
@@ -10,7 +20,6 @@
           [value]="currentState?.apiKey">
       </div>
     </div>
-
 
     <div class="input-group w-100 py-1">
       <textarea class="form-control" aria-label="With textarea" (change)="updateQuery($event)"
@@ -24,15 +33,6 @@
         aria-expanded="false" aria-controls="collapseExample">
         API Key
       </button>
-    </div>
-  </div>
-
-  <div class="w-100 p-3">
-    <div *ngFor="let message of currentState?.messages" class="w-100">
-      <pre style="white-space: break-spaces;">
-      <span *ngIf="message.role === 'system'" class="">system ({{currentState?.model}}): {{message.content}}</span>
-      <div *ngIf="message.role !== 'system'" class="font-bold">{{message.role === 'assistant' ? 'Angela' : 'You'}}:{{message.content}}</div>
-    </pre>
     </div>
   </div>
 </div>

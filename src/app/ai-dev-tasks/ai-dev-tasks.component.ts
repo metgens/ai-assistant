@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable max-len */
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { IMessage, IState } from '../core/stores/state.dt';
@@ -6,7 +7,8 @@ import { ShortcutsService } from '../core/shortcuts';
 import { OpenAiChatService } from '../shared/open-ai/open-ai-chat.service';
 import { TaskWrapperService } from '../shared/ai-dev/task-wrapper.service';
 import { OpenAiService } from '../shared/open-ai/open-ai.service';
-import Enumerable from 'linq'
+import Enumerable from 'linq';
+import retry from 'promise-fn-retry';
 
 @Component({
   selector: 'app-ai-dev-tasks',
@@ -102,6 +104,52 @@ Response Example
     let answer = responseJson.choices[0].message.content;
     answer = JSON.parse(answer);
     this.response = await this.taskWrapper.sendAnswer(token, answer);
+  }
+
+  async doTask06() {
+    const taskName = 'scraper';
+    const token = await this.taskWrapper.getAuthenticationToken(taskName);
+    this.task = await this.taskWrapper.getTask(token);
+
+    const textUrl = this.task.input;
+    const options = {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36'
+      },
+      timeout: 120000
+    };
+
+    const promiseFn = () => fetch(textUrl, options);
+    const retryOptions = {
+      times: 3,
+      initialDelay: 100,
+    };
+
+    const response = await retry(promiseFn, retryOptions);
+
+    const context = await response.text();
+        const queryForPerson = {
+          messages: [
+            { role: 'user', content: `${this.task.question.toString()}` },
+            {
+              role: 'system',
+              content: `Use only text provided as context below to answer on user question (answer using polish). Answer in max 10 words.
+              .
+
+    '''Context
+    ${context}
+    ` }
+          ],
+          apiKey: this.currentState?.apiKey
+        } as IState;
+
+        const chatResponse = await this.openAi.openAIChatCompletion(queryForPerson);
+        const chatResponseJson = await chatResponse.json();
+        this.response = chatResponseJson;
+        let answer = chatResponseJson.choices[0].message.content;
+        answer = answer;
+        this.response = await this.taskWrapper.sendAnswer(token, answer);
   }
 
   async updateApiKey(event: any) {

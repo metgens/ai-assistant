@@ -4,6 +4,7 @@ import { readText } from '@tauri-apps/api/clipboard';
 import { IShortcut, IState } from './stores/state.dt';
 import { appWindow } from '@tauri-apps/api/window';
 import { StateService } from './stores/state-service';
+import { moveWindow, Position } from 'tauri-plugin-positioner-api';
 
 @Injectable({
     providedIn: 'root'

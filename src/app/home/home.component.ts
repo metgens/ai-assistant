@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { OpenAiChatService } from '../shared/open-ai/open-ai-chat.service';
-import { IShortcut, IState } from '../core/stores/state.dt';
+import { IMessage, IShortcut, IState } from '../core/stores/state.dt';
 import { StateService } from '../core/stores/state-service';
 import { ShortcutsService } from '../core/shortcuts';
 
@@ -11,28 +11,20 @@ import { ShortcutsService } from '../core/shortcuts';
   styleUrls: ['./home.component.scss']
 })
 
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit {
 
   currentState: IState | null = null;
 
-  constructor(private stateService: StateService, private shortcutsService: ShortcutsService,
-    private openAiChat: OpenAiChatService, private changeDetectorRef: ChangeDetectorRef) {
+  constructor(private stateService: StateService, private openAiChat: OpenAiChatService, private changeDetectorRef: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
     console.log('HomeComponent INIT');
-    this.loadState();
     this.stateService.state$.subscribe(state => {
       this.currentState = state;
       this.changeDetectorRef.detectChanges();
     });
     window.addEventListener('keydown', (ev) => this.sendShortcut(ev));
-  }
-
-  ngOnDestroy(): void {
-    this.currentState?.shortcuts.forEach(shortcut => {
-      this.shortcutsService.unregisterKeystroke(shortcut);
-    });
   }
 
   async sendShortcut(event: KeyboardEvent) {
@@ -52,14 +44,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   updateQuery(event: any) {
     this.stateService.updateState({ query: event.target.value });
-  }
-
-  private loadState() {
-    this.stateService.loadState().then((loadedState) => {
-      loadedState?.shortcuts.forEach(shortcut => {
-        this.shortcutsService.registerKeystroke(loadedState, shortcut);
-      });
-    });
   }
 
 }

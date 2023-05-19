@@ -33,7 +33,9 @@ export class HomeComponent implements OnInit {
 
   async sendShortcut(event: KeyboardEvent) {
     if (event.key === 'Enter' && event.metaKey) {
-      this.updateQuery(event);
+      if(!this.currentState?.query){
+        this.updateQuery(event);
+      }
       this.ask();
     }
   }

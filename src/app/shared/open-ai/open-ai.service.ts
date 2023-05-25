@@ -111,7 +111,7 @@ export class OpenAiService {
       for (const line of lines) {
         const message = line.replace(/^data: /, '');
         if (message === '[DONE]') {
-          await clipboard.writeText(answer);
+          // await clipboard.writeText(answer);
 
           this.currentState.messages = this.currentState?.messages.map(msg => {
             msg.content = msg.role === 'system' ? defaultSystemPrompt : msg.content;

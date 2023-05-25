@@ -1,0 +1,12 @@
+<div class="main-container flex-fill flex-column flex-wrap justify-content-start align-items-start pt-2 px-3">
+  <div *ngFor="let shortcut of assistantShortcuts" class="d-flex flex-row">
+    <button (click)="openAssistantRole(shortcut)" class="shortcut-button rounded-10 m-1"
+        aria-current="page" [routerLink]='["/home", shortcut.name]' routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+         <i class="bi {{shortcut.icon}}"></i>
+    </button>
+    <div class="pt-2 px-1 d-flex flex-column">
+      <span>{{shortcut.name}}</span>
+      <span style="font-size: 0.7rem;">{{shortcut.localKeystroke}}</span>
+    </div>
+  </div>
+</div>

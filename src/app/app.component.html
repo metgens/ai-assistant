@@ -1,9 +1,16 @@
 <main class="d-flex flex-nowrap h-100">
     <div class="d-flex flex-column flex-shrink-0 bg-dark">
         <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
-            <li>
+          <li>
+            <button class="nav-link border-bottom rounded-0" aria-current="page"
+                [routerLink]='["/assistant"]' routerLinkActive="active"  [routerLinkActiveOptions]="{exact: true}" title="Assistant"
+                data-bs-toggle="tooltip" data-bs-placement="right">
+                <i class="bi bi-house-door"></i>
+            </button>
+        </li>
+          <li>
                 <button (click)="openAssistantRole(null)" class="nav-link border-bottom rounded-0" aria-current="page"
-                    [routerLink]='["/home","assistant"]' routerLinkActive="active"  [routerLinkActiveOptions]="{exact: true}" title="Assistant"
+                    [routerLink]='["/assistant","assistant"]' routerLinkActive="active"  [routerLinkActiveOptions]="{exact: true}" title="Assistant"
                     data-bs-toggle="tooltip" data-bs-placement="right">
                     <i class="bi bi-chat"></i>
                 </button>

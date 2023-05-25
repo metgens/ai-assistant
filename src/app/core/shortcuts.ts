@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { isRegistered, register, unregister } from '@tauri-apps/api/globalShortcut';
+import { ShortcutHandler, isRegistered, register, unregister } from '@tauri-apps/api/globalShortcut';
 import { readText } from '@tauri-apps/api/clipboard';
 import { IShortcut, IState } from './stores/state.dt';
 import { appWindow } from '@tauri-apps/api/window';
@@ -12,16 +12,29 @@ export class ShortcutsService {
 
     constructor(private stateService: StateService, private router: Router) { }
 
-    public async registerKeystroke(currentState: IState, shortcut: IShortcut) {
+    public async registerShortcut(currentState: IState, shortcut: IShortcut) {
         const action = await this.createAction(currentState, shortcut);
-        const alreadyRegistered = await isRegistered(shortcut.keystroke);
-        if (!alreadyRegistered) {
-            await register(shortcut.keystroke, action);
-            console.log(`Registered ${shortcut.keystroke}`);
-        }
+        this.registerKeystroke(shortcut.keystroke, action);
     }
 
-    public async unregisterKeystroke(shortcut: IShortcut) {
+    public async registerKeystroke(keystroke: string, action: any) {
+
+      const actionWithOpeningApp = async () => {
+            console.log(`Action started ${keystroke}`);
+            await appWindow.show();
+            await appWindow.unminimize();
+            await appWindow.setFocus();
+            action();
+      }
+
+      const alreadyRegistered = await isRegistered(keystroke);
+      if (!alreadyRegistered) {
+          await register(keystroke, actionWithOpeningApp);
+          console.log(`Registered ${keystroke}`);
+      }
+  }
+
+    public async unregisterShortcut(shortcut: IShortcut) {
         await unregister(shortcut.keystroke);
     }
 
@@ -35,26 +48,21 @@ export class ShortcutsService {
             ]
         } as IState;
         this.stateService.updateState(updatedState);
-        this.router.navigateByUrl('/home/' + (shortcut?.name ?? 'assistant'));
+        this.router.navigateByUrl('/assistant/' + (shortcut?.name ?? 'assistant'));
     }
 
     private async createAction(currentState: IState, shortcut: IShortcut) {
         return async () => {
-            console.log(`Action started ${shortcut.name}`);
-            await appWindow.show();
-            await appWindow.unminimize();
-            await appWindow.setFocus();
 
-            const clipboardText = (await readText())?.toString()?.trim();
             const updatedState = {
                 ...currentState,
-                query: clipboardText ?? '',
+                query: '',
                 messages: [
                     { role: 'system', content: shortcut.system },
                 ]
             } as IState;
 
-            this.router.navigateByUrl('/home/' + (shortcut?.name ?? 'assistant'));
+            this.router.navigateByUrl('/assistant/' + (shortcut?.name ?? 'assistant'));
             this.stateService.updateState(updatedState);
         };
     }

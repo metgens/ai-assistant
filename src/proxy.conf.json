@@ -1,18 +1,18 @@
 {
     "/token/*": {
-        "target": "https://zadania.aidevs.pl",
+        "target": "https://zadania.aidews.pl",
         "secure": true,
         "changeOrigin": true,
         "logLevel": "debug"
     },
     "/task/*": {
-        "target": "https://zadania.aidevs.pl",
+        "target": "https://zadania.aidews.pl",
         "secure": true,
         "changeOrigin": true,
         "logLevel": "debug"
     },
     "/answer/*": {
-        "target": "https://zadania.aidevs.pl",
+        "target": "https://zadania.aidews.pl",
         "secure": true,
         "changeOrigin": true,
         "logLevel": "debug"

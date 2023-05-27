@@ -18,17 +18,21 @@
     </div>
 
     <div class="input-group w-100 py-1">
-      <textarea class="form-control" aria-label="With textarea" (change)="updateQuery($event)"
+      <textarea class="form-control" aria-label="With textarea" #queryInput (change)="updateQuery($event)"
         [value]="currentState?.query" placeholder="Ask me anything..." name="prompt" id="" rows="4"></textarea>
     </div>
     <div class="d-flex flex-row w-100">
       <button class="btn btn-primary w-25 my-2 me-auto" (click)="ask()">
         Send
       </button>
-      <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseApiKey"
-        aria-expanded="false" aria-controls="collapseApiKey">
+      <button class="btn btn-dark" type="button" (click)="copyToClipboard()"
+      aria-expanded="false" aria-controls="copyToClipboard">
+      <i class="bi bi-clipboard2-plus"></i>
+    </button>
+      <button class="btn btn-dark" type="button" aria-expanded="false" data-bs-toggle="collapse" data-bs-target="#collapseApiKey" aria-controls="collapseApiKey" >
         API Key
       </button>
+
     </div>
   </div>
 </div>

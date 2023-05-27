@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { OpenAiChatService } from '../shared/open-ai/open-ai-chat.service';
 import { IMessage, IShortcut, IState } from '../core/stores/state.dt';
 import { StateService } from '../core/stores/state-service';
 import { ShortcutsService } from '../core/shortcuts';
 import { ActivatedRoute } from '@angular/router';
-
+import { clipboard } from '@tauri-apps/api';
+import Enumerable from 'linq';
 
 @Component({
   selector: 'app-home',
@@ -15,6 +16,7 @@ import { ActivatedRoute } from '@angular/router';
 export class HomeComponent implements OnInit {
 
   currentState: IState | null = null;
+  @ViewChild('queryInput') queryInput: ElementRef | null = null;
 
   constructor(private stateService: StateService, private openAiChat: OpenAiChatService,
     private changeDetectorRef: ChangeDetectorRef, private route: ActivatedRoute) {
@@ -33,7 +35,11 @@ export class HomeComponent implements OnInit {
 
   async sendShortcut(event: KeyboardEvent) {
     if (event.key === 'Enter' && event.metaKey) {
-      await this.ask();
+      this.queryInput?.nativeElement.dispatchEvent(new Event('change'));
+      this.ask();
+    }
+    if (event.key === '\\' && event.metaKey) {
+      this.copyToClipboard();
     }
   }
 
@@ -48,6 +54,11 @@ export class HomeComponent implements OnInit {
 
   updateQuery(event: any) {
     this.stateService.updateState({ query: event.target.value });
+  }
+
+  copyToClipboard(){
+    var answer = Enumerable.from(this.currentState!.messages).where(x => x.role == "assistant").last().content;
+    clipboard.writeText(answer);
   }
 
 }

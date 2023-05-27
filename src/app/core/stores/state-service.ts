@@ -73,7 +73,7 @@ Everything that user sends needs to be only translated. Provide only corrected t
                     icon: 'bi-body-text'
                 },
                 {
-                    id: 4,
+                    id: 5,
                     system:
                         `
 User will send you English {sentence} and {output format}. {sentence} is taken from mobile game for toddlers and kids. I want you to translate this {sentence} into:

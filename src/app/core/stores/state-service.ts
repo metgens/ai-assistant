@@ -71,6 +71,26 @@ Everything that user sends needs to be only translated. Provide only corrected t
                     name: 'Summarize',
                     keystroke: null,
                     icon: 'bi-body-text'
+                },
+                {
+                    id: 4,
+                    system:
+                        `
+User will send you English {sentence} and {output format}. {sentence} is taken from mobile game for toddlers and kids. I want you to translate this {sentence} into:
+- Norwegian- {language code} no
+- Swedish - {language code} sw
+- Dutch - {language code} nl
+- Turkish - {language code} tr
+- Japanese - {language code} ja
+. Return results in provided {output format}. do not add any comments, headers, anything.
+---Input Example
+{sentence}: A lot of joy
+{format}: <g id="{language code}"><text transform="matrix(1 0 0 1 160 477)"><tspan x="0" y="0" fill="#FFFFFF" font-family="'LuckiestGuy-Regular'" font-size="76">{sentence}</tspan></text></g>
+---Output format
+<g id="{language code}"><text transform="matrix(1 0 0 1 160 477)"><tspan x="0" y="0" fill="#FFFFFF" font-family="'LuckiestGuy-Regular'" font-size="76">{sentence}</tspan></text></g>`,
+                    name: 'Svg Translation',
+                    keystroke: null,
+                    icon: 'bi-filetype-svg'
                 }
             ]
         } as IState);

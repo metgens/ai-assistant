@@ -16,6 +16,7 @@ export interface IShortcut {
     name: string;
     system: string;
     keystroke: string;
+    localKeystroke?: string;
     icon?: string;
 }
 

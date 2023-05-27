@@ -27,6 +27,7 @@ export class AppComponent implements OnDestroy, OnInit, AfterViewInit {
   ) {
     this.initialize();
     this.loadState();
+    this.shortcutsService.registerKeystroke("CommandOrControl+Alt+;",() => { this.router.navigateByUrl('/assistant')});
     this.stateService.state$.subscribe(state => {
       this.currentState = state;
     });
@@ -43,7 +44,7 @@ export class AppComponent implements OnDestroy, OnInit, AfterViewInit {
   ngOnDestroy(): void {
     saveWindowState(StateFlags.SIZE);
     this.currentState?.shortcuts.forEach(shortcut => {
-      this.shortcutsService.unregisterKeystroke(shortcut);
+      this.shortcutsService.unregisterShortcut(shortcut);
     });
   }
 
@@ -55,7 +56,7 @@ export class AppComponent implements OnDestroy, OnInit, AfterViewInit {
     this.stateService.loadState().then((loadedState) => {
       this.assistantShortcuts = loadedState?.shortcuts;
       loadedState?.shortcuts.forEach(shortcut => {
-        this.shortcutsService.registerKeystroke(loadedState, shortcut);
+        this.shortcutsService.registerShortcut(loadedState, shortcut);
       });
     });
   }

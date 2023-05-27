@@ -11,7 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import { HomeModule } from './home/home.module';
+import { AssistantModule } from './assistant/assistant.module';
 
 import { AppComponent } from './app.component';
 import { AiDevTasksComponent } from './ai-dev-tasks/ai-dev-tasks.component';
@@ -29,7 +29,7 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     HttpClientModule,
     CoreModule,
     SharedModule,
-    HomeModule,
+    AssistantModule,
     AppRoutingModule,
     TranslateModule.forRoot({
       loader: {

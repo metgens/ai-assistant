@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { OpenAiChatService } from '../shared/open-ai/open-ai-chat.service';
 import { IMessage, IShortcut, IState } from '../core/stores/state.dt';
 import { StateService } from '../core/stores/state-service';
@@ -8,12 +8,12 @@ import { clipboard } from '@tauri-apps/api';
 import Enumerable from 'linq';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  selector: 'app-assistant',
+  templateUrl: './assistant.component.html',
+  styleUrls: ['./assistant.component.scss']
 })
 
-export class HomeComponent implements OnInit {
+export class AssistantComponent implements OnInit, AfterViewInit {
 
   currentState: IState | null = null;
   @ViewChild('queryInput') queryInput: ElementRef | null = null;
@@ -25,13 +25,21 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('HomeComponent INIT');
+    console.log('AssistantComponent INIT');
     this.stateService.state$.subscribe(state => {
       this.currentState = state;
       this.changeDetectorRef.detectChanges();
     });
     window.addEventListener('keydown', (ev) => this.sendShortcut(ev));
+
+    this.route.params.subscribe(queryParams => {
+      this.queryInput?.nativeElement.focus();
+    });
   }
+
+  ngAfterViewInit(): void {
+    this.queryInput?.nativeElement.focus();
+   }
 
   async sendShortcut(event: KeyboardEvent) {
     if (event.key === 'Enter' && event.metaKey) {

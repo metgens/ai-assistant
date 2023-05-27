@@ -35,7 +35,7 @@ export class StateService {
                     id: 1,
                     system: 'You are a Fullstack developer (C#, Typescript, Html/css). Provide only code and nothing more (no comments).',
                     name: 'Fullstack Dev',
-                    keystroke: 'CommandOrControl+Shift+K',
+                    keystroke: 'CommandOrControl+Option+K',
                     icon: 'bi-keyboard'
                 },
                 {
@@ -45,7 +45,7 @@ export class StateService {
 Everything that user sends needs to be only translated. Provide only corrected text, no explanations. If my text is correct, write only "OK!"
 !!!Context: I am a cloud and mobile games developer.`,
                     name: 'Fix typos',
-                    keystroke: 'CommandOrControl+Shift+L',
+                    keystroke: 'CommandOrControl+Option+L',
                     icon: 'bi-globe'
                 },
                 {
@@ -65,7 +65,7 @@ Everything that user sends needs to be only translated. Provide only corrected t
                     icon: 'bi-bug'
                 },
                 {
-                    id: 3,
+                    id: 4,
                     system:
                         `Detect {language} and summarize {user} text in bullet points. Output only in detected {language}.`,
                     name: 'Summarize',
@@ -73,7 +73,7 @@ Everything that user sends needs to be only translated. Provide only corrected t
                     icon: 'bi-body-text'
                 },
                 {
-                    id: 4,
+                    id: 5,
                     system:
                         `
 User will send you English {sentence} and {output format}. {sentence} is taken from mobile game for toddlers and kids. I want you to translate this {sentence} into:

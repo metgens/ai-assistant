@@ -42,7 +42,7 @@ export class AssistantComponent implements OnInit, AfterViewInit {
    }
 
   async sendShortcut(event: KeyboardEvent) {
-    if (event.key === 'Enter' && event.metaKey) {
+    if (event.key === 'Enter' && event.ctrlKey) {
       this.queryInput?.nativeElement.dispatchEvent(new Event('change'));
       this.ask();
     }

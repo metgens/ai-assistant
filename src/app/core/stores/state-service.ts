@@ -51,7 +51,7 @@ Everything that user sends needs to be only translated. Provide only corrected t
                 {
                     id: 2,
                     system:
-                        `If text is in english translate it to polish language. If it is in polish translate it into english. Remember that I am a software developer.`,
+                        `If text is in english translate it to polish language. If it is in polish translate it into english. Remember that I am a software developer. Return only translated statement and nothing more!`,
                     name: 'Translate',
                     keystroke: null,
                     icon: 'bi-translate'

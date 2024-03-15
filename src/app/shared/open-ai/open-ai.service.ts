@@ -114,7 +114,7 @@ export class OpenAiService {
           // await clipboard.writeText(answer);
 
           this.currentState.messages = this.currentState?.messages.map(msg => {
-            msg.content = msg.role === 'system' ? defaultSystemPrompt : msg.content;
+            msg.content = msg.role === 'system' && msg.content == null ? defaultSystemPrompt : msg.content;
             return msg;
           });
           this.currentState.query = '';

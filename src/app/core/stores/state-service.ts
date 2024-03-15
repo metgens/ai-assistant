@@ -51,7 +51,7 @@ Everything that user sends needs to be only translated. Provide only corrected t
                 {
                     id: 2,
                     system:
-                        `Translate to polish language.`,
+                        `If text is in english translate it to polish language. If it is in polish translate it into english. Remember that I am a software developer.`,
                     name: 'Translate',
                     keystroke: null,
                     icon: 'bi-translate'
@@ -114,7 +114,9 @@ User will send you English {sentence} and {output format}. {sentence} is taken f
 
     public async loadState(): Promise<IState | null> {
         const savedState = await this.store.get('state') as IState;
-        this.updateState({ apiKey: savedState.apiKey, aiDevApiKey: savedState.aiDevApiKey });
+        if(savedState != null){
+            this.updateState(savedState);
+        }
         return this.currentState;
     }
 

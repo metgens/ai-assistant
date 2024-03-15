@@ -46,7 +46,7 @@ export class AssistantComponent implements OnInit, AfterViewInit {
       this.queryInput?.nativeElement.dispatchEvent(new Event('change'));
       this.ask();
     }
-    if (event.key === '\\' && event.metaKey) {
+    if (event.key === 'c' && event.ctrlKey) {
       this.copyToClipboard();
     }
   }
@@ -60,13 +60,18 @@ export class AssistantComponent implements OnInit, AfterViewInit {
     if (apiKey) { await this.stateService.saveState({ apiKey }); }
   }
 
+  async updateApiModel(event: any) {
+    const model = event.target.value;
+    if (model) { await this.stateService.saveState({ model }); }
+  }
+
   updateQuery(event: any) {
     this.stateService.updateState({ query: event.target.value });
   }
 
   copyToClipboard(){
     var answer = Enumerable.from(this.currentState!.messages).where(x => x.role == "assistant").last().content;
-    clipboard.writeText(answer);
+    clipboard.writeText(answer?.trimEnd());
   }
 
 }

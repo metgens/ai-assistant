@@ -3,8 +3,9 @@
     <code style="white-space: break-spaces;">
     <div *ngFor="let message of currentState?.messages" class="w-100 mb-1" [ngClass]="{'chat-not-assistant': message.role !== 'assistant'}">
       <span *ngIf="message.role === 'system'" class="">system ({{currentState?.model}}): {{message.content}}</span>
-      <div *ngIf="message.role !== 'system'" class="font-bold">{{message.role === 'assistant' ? 'Ben' :
-        'You'}}: {{message.content}}</div>
+      <div *ngIf="message.role !== 'system'" class="font-bold text-right">{{message.role === 'assistant' ? 'Ben' :
+        'You'}}</div>
+        <div *ngIf="message.role !== 'system'">{{message.content}}</div>
     </div>
     </code>
   </div>
@@ -14,6 +15,13 @@
       <div class="input-group w-100 py-1">
         <input class="form-control" placeholder="OpenAI API Key" type="text" (blur)="updateApiKey($event)"
           [value]="currentState?.apiKey">
+      </div>
+      <div class="input-group w-100 py-1">
+        <select class="form-control" id="modelSelect" (change)="updateApiModel($event)">
+          <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+          <option value="gpt-4">GPT-4</option>
+          <option value="gpt-4-turbo-preview">GPT-4 Turbo Preview</option>
+        </select>
       </div>
     </div>
 
@@ -26,11 +34,11 @@
         Send
       </button>
       <button class="btn btn-dark" type="button" (click)="copyToClipboard()"
-      aria-expanded="false" aria-controls="copyToClipboard">
+      aria-expanded="false" aria-controls="copyToClipboard" title="Ctrl+C">
       <i class="bi bi-clipboard2-plus"></i>
     </button>
       <button class="btn btn-dark" type="button" aria-expanded="false" data-bs-toggle="collapse" data-bs-target="#collapseApiKey" aria-controls="collapseApiKey" >
-        API Key
+        Settings
       </button>
 
     </div>
